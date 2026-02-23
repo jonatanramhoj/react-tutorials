@@ -23,7 +23,7 @@ export function Comments({ videoId }: { videoId: string }) {
     return `/api/videos/${videoId}/comments?cursor=${previousPageData?.nextCursor}&limit=5`;
   };
 
-  const { data, isLoading, error, mutate, size, setSize } =
+  const { data, isLoading, error, mutate, size, setSize, isValidating } =
     useSWRInfinite<CommentPage>(getKey, { revalidateOnFocus: false });
 
   const comments = data?.flatMap((page) => page?.comments);
@@ -78,7 +78,9 @@ export function Comments({ videoId }: { videoId: string }) {
                 >
                   Cancel
                 </button>
-                <button className="btn-submit">Comment</button>
+                <button className="btn-submit">
+                  {isValidating && !isLoadingMore ? <Spinner /> : "Comment"}
+                </button>
               </div>
             )}
           </div>
