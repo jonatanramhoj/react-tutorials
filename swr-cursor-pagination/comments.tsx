@@ -4,10 +4,11 @@ import useSWRInfinite from "swr/infinite";
 import { CommentsSkeleton } from "../skeletons/comments-skeleton";
 import { Spinner } from "../spinner";
 import { mockUser } from "@/data/mock-user";
+import { Comment } from "@/types/comment";
 
-type CommentPage = {
+export type CommentPage = {
   comments: Comment[];
-  nextCursor: number;
+  nextCursor: number | null;
 };
 
 export function Comments({ videoId }: { videoId: string }) {
@@ -23,9 +24,9 @@ export function Comments({ videoId }: { videoId: string }) {
   };
 
   const { data, isLoading, error, mutate, size, setSize } =
-    useSWRInfinite<CommentPage | null>(getKey, { revalidateOnFocus: false });
+    useSWRInfinite<CommentPage>(getKey, { revalidateOnFocus: false });
 
-  const comments = data?.flatMap((page) => page?.comments ?? []) ?? [];
+  const comments = data?.flatMap((page) => page?.comments);
   const nextCursor = data?.at(-1)?.nextCursor;
   const isLoadingMore = (data?.length ?? 0) > 0 && (data?.length ?? 0) < size;
 
